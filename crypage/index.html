@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Make it cry!</title>
+
+    <script src="https://unpkg.com/peerjs@1.1.0/dist/peerjs.min.js"></script>
+</head>
+
+<body>
+
+<div id="container">
+
+    <img id="imgCrying" src="tenor.gif" style="display: none;" />
+    <h1 id="fineLabel" >All fine now! Just working...</h1>
+
+
+    <div id="localInfoDiv" style="display: none;">
+        <div>My ID is: <span id="myIdLabel"></span></div>
+        <img id="myIdQRCode" alt="qrcode"/>
+    </div>
+
+    <button id="makeItCryButton" style="display: none;">Make it cry!</button>
+</div>
+
+<script type="text/javascript">
+    const CRY_COMMAND = "CRY!!!";
+    const peer = new Peer();
+
+    peer.on('open', id =>{
+        console.log('My peer ID is: ' + id);
+
+        document.getElementById("myIdLabel").textContent = id;
+
+        const qrCodeContent = window.location.origin + window.location.pathname + "?peerId=" + id;
+        document.getElementById("myIdQRCode").src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${qrCodeContent}&choe=UTF-8`;
+    });
+
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const peerId = urlParams.get('peerId');
+
+    peer.on('connection', conn => {
+        conn.on('data', data => {
+            // Will print 'hi!'
+            console.log(data);
+
+            if (data === CRY_COMMAND) {
+                document.getElementById("imgCrying").style.display = "block";
+                document.getElementById("fineLabel").style.display = "none";
+
+                setTimeout(() => {
+                    document.getElementById("imgCrying").style.display = "none";
+                    document.getElementById("fineLabel").style.display = "block";
+                 }, 5000);
+            }
+        });
+    });
+
+    if (peerId) {
+        const conn = peer.connect(peerId);    
+        // on open will be launch when you successfully connect to PeerServer
+        conn.on('open', id => {
+            conn.send('hi!');
+
+            console.log(document.getElementById("myIdQRCode"), document.getElementById("myIdQRCode").style);
+            document.getElementById("makeItCryButton").style.display = "block";
+            document.getElementById("makeItCryButton").onclick = () => {
+                conn.send(CRY_COMMAND);
+            };
+        });
+
+    } else {
+        document.getElementById("localInfoDiv").style.display = "block";
+    }
+    
+
+</script>
+</body>
+</html>
