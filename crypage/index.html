@@ -20,7 +20,7 @@
         <img id="myIdQRCode" alt="qrcode"/>
     </div>
 
-    <button id="makeItCryButton" style="display: none; height: 125px; width: 125px; font-size:30px;">Make it cry!</button>
+    <button id="makeItCryButton" style="display: none; height: 200px; width: 200px; font-size:50px;">Make it cry!</button>
 </div>
 
 <script type="text/javascript">
@@ -33,7 +33,7 @@
         document.getElementById("myIdLabel").textContent = id;
 
         const qrCodeContent = window.location.origin + window.location.pathname + "?peerId=" + id;
-        document.getElementById("myIdQRCode").src = `https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${qrCodeContent}&choe=UTF-8`;
+        document.getElementById("myIdQRCode").src = `https://chart.googleapis.com/chart?chs=400x400&cht=qr&chl=${qrCodeContent}&choe=UTF-8`;
     });
 
 
@@ -52,7 +52,7 @@
                 setTimeout(() => {
                     document.getElementById("imgCrying").style.display = "none";
                     document.getElementById("fineLabel").style.display = "block";
-                 }, 5000);
+                 }, 10000);
             }
         });
     });
