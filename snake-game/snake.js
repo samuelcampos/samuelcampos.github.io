@@ -1,6 +1,29 @@
+// Set the block size based on the screen size
+var BLOCK_SIZE = Math.min(
+    Math.floor(window.innerWidth * 0.8 / 20),
+    Math.floor(window.innerHeight * 0.8 / 20)
+);
+
+/*
+The number 20 is used as an arbitrary default value for the block size in case the calculation based on the screen size fails for some reason. This can happen if window.innerWidth or window.innerHeight is very small, which would result in a very small BLOCK_SIZE value. In that case, setting the BLOCK_SIZE to 20 ensures that the game will still be playable, albeit on a smaller canvas.
+In practice, you can adjust this value as needed to achieve the desired block size for your game. The value of 20 was chosen as a reasonable default, but you can experiment with different values to see what works best for your game.
+*/
+  
+// Calculate the number of columns and rows based on the block size
+var COLS = Math.floor(window.innerWidth * 0.8 / BLOCK_SIZE);
+var ROWS = Math.floor(window.innerHeight * 0.8 / BLOCK_SIZE);
+
+console.log(BLOCK_SIZE, COLS, ROWS)
+
 // Define the canvas and its context
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
+const canvas = document.createElement("canvas");
+// Set the size of the canvas based on the size of the game grid
+canvas.width = Math.min(COLS * BLOCK_SIZE, 900);
+canvas.height = Math.min(ROWS * BLOCK_SIZE, 700)
+// Append the canvas to the document
+document.body.appendChild(canvas);
+
+const ctx = canvas.getContext("2d");
 
 // Define the width and height of each cell in the grid
 var cellSize = 10;
@@ -85,21 +108,87 @@ function draw() {
   drawCell(food.x, food.y);
 }
 
-// Define the function to handle key presses
-function handleKeyDown(e) {
-  switch (e.keyCode) {
-    case 38: // Up arrow
-      snake.direction = "up";
-      break;
-    case 40: // Down arrow
-      snake.direction = "down";
-      break;
-    case 37: // Left arrow
-      snake.direction = "left";
-      break;
-    case 39: // Right arrow
-      snake.direction = "right";
-      break;
+// Define the function to handle key presses and touch events
+/*function handleInput(input) {
+    if (input.keyCode >= 37 && input.keyCode <= 40) {
+      // Handle key presses
+      switch (input.keyCode) {
+        case 38: // Up arrow
+          snake.direction = "up";
+          break;
+        case 40: // Down arrow
+          snake.direction = "down";
+          break;
+        case 37: // Left arrow
+          snake.direction = "left";
+          break;
+        case 39: // Right arrow
+          snake.direction = "right";
+          break;
+      }
+    } else if (input.type === "touchstart") {
+      // Handle touch events
+      startX = input.touches[0].pageX;
+      startY = input.touches[0].pageY;
+    } else if (input.type === "touchmove") {
+        // Handle touch events
+        var endX = input.touches[0].pageX;
+        var endY = input.touches[0].pageY;
+        var dx = endX - startX;
+        var dy = endY - startY;
+        var absDx = Math.abs(dx);
+        var absDy = Math.abs(dy);
+        
+        if (absDx > absDy && absDx > 10) {
+            snake.direction = dx > 0 ? "right" : "left";
+        } else if (absDy > absDx && absDy > 10) {
+            snake.direction = dy > 0 ? "down" : "up";
+        }
+    }
+}*/
+
+const LEFT_KEY = 37;
+const UP_KEY = 38;
+const RIGHT_KEY = 39;
+const DOWN_KEY = 40;
+
+
+function handleInput(event) {
+  if (event.type === "keydown") {
+    if (event.keyCode === LEFT_KEY && snake.direction !== "right") {
+        snake.direction = "left";
+    } else if (event.keyCode === UP_KEY && snake.direction !== "down") {
+        snake.direction = "up";
+    } else if (event.keyCode === RIGHT_KEY && snake.direction !== "left") {
+        snake.direction = "right";
+    } else if (event.keyCode === DOWN_KEY && snake.direction !== "up") {
+        snake.direction = "down";
+    }
+  } else if (event.type === "touchstart") {
+    startX = event.touches[0].pageX;
+    startY = event.touches[0].pageY;
+  } else if (event.type === "touchmove") {
+    endX = event.touches[0].pageX;
+    endY = event.touches[0].pageY;
+
+    var diffX = startX - endX;
+    var diffY = startY - endY;
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      // horizontal swipe
+      if (diffX > 0 && snake.direction !== "right") {
+        snake.direction = "left";
+      } else if (diffX < 0 && snake.direction !== "left") {
+        snake.direction = "right";
+      }
+    } else {
+      // vertical swipe
+      if (diffY > 0 && snake.direction !== "down") {
+        snake.direction = "up";
+      } else if (diffY < 0 && snake.direction !== "up") {
+        snake.direction = "down";
+      }
+    }
   }
 }
 
@@ -112,8 +201,10 @@ for (var i = 0; i < snake.length; i++) {
     snake.cells.push({ x: snake.x - i, y: snake.y });
 }
 
-// Add the event listener for key presses
-document.addEventListener("keydown", handleKeyDown);
+// Add the event listeners for key presses and touch events
+document.addEventListener("keydown", handleInput);
+document.addEventListener("touchstart", handleInput);
+document.addEventListener("touchmove", handleInput);
 
 // Define the main game loop
 function loop() {
