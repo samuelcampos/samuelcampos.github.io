@@ -172,6 +172,7 @@ function draw() {
     }
 }*/
 
+const ENTER_KEY = 13;
 const LEFT_KEY = 37;
 const UP_KEY = 38;
 const RIGHT_KEY = 39;
@@ -188,6 +189,8 @@ function handleInput(event) {
         snake.direction = "right";
     } else if (event.keyCode === DOWN_KEY && snake.direction !== "up") {
         snake.direction = "down";
+    } else if (event.keyCode === ENTER_KEY && !inRunning) {
+        hideModal();
     }
   }
   /*else if (event.type === "touchstart") {
