@@ -11,7 +11,7 @@ In practice, you can adjust this value as needed to achieve the desired block si
   
 // Calculate the number of columns and rows based on the block size
 var COLS = Math.floor(window.innerWidth * 0.8 / BLOCK_SIZE);
-var ROWS = Math.floor(window.innerHeight * 0.7 / BLOCK_SIZE);
+var ROWS = Math.floor(window.innerHeight * 0.65 / BLOCK_SIZE);
 
 console.log(BLOCK_SIZE, COLS, ROWS)
 
@@ -20,8 +20,7 @@ const canvas = document.getElementById("game-canvas");
 // Set the size of the canvas based on the size of the game grid
 canvas.width = Math.min(COLS * BLOCK_SIZE, 900);
 canvas.height = Math.min(ROWS * BLOCK_SIZE, 700)
-// Append the canvas to the document
-document.body.appendChild(canvas);
+
 
 const ctx = canvas.getContext("2d");
 
