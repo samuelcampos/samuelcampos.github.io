@@ -68,12 +68,12 @@ function update() {
 
   // Check if the snake has collided with a wall or with itself
   if (snake.x < 0 || snake.x >= canvas.width / cellSize || snake.y < 0 || snake.y >= canvas.height / cellSize) {
-    alert("Game Over!");
+    alert("Game Over!\nTry Again ;)");
     location.reload();
   }
   for (var i = 0; i < snake.cells.length; i++) {
     if (snake.cells[i].x === snake.x && snake.cells[i].y === snake.y) {
-      alert("Game Over!");
+      alert("Game Over!\nTry Again ;)");
       location.reload();
     }
   }
