@@ -1,5 +1,5 @@
 // Set the block size based on the screen size
-var BLOCK_SIZE = Math.min(
+const BLOCK_SIZE = Math.min(
     Math.floor(window.innerWidth * 0.8 / 20),
     Math.floor(window.innerHeight * 0.8 / 20)
 );
@@ -10,8 +10,8 @@ In practice, you can adjust this value as needed to achieve the desired block si
 */
   
 // Calculate the number of columns and rows based on the block size
-var COLS = Math.floor(window.innerWidth * 0.8 / BLOCK_SIZE);
-var ROWS = Math.floor(window.innerHeight * 0.65 / BLOCK_SIZE);
+const COLS = Math.floor(window.innerWidth * 0.8 / BLOCK_SIZE);
+const ROWS = Math.floor(window.innerHeight * 0.65 / BLOCK_SIZE);
 
 console.log(BLOCK_SIZE, COLS, ROWS)
 
@@ -24,10 +24,13 @@ canvas.height = Math.min(ROWS * BLOCK_SIZE, 700)
 
 const ctx = canvas.getContext("2d");
 
+// Define the width and height of each cell in the grid
+const cellSize = 10;
+
 let inRunning = true;
 
-// Define the width and height of each cell in the grid
-var cellSize = 10;
+const MIN_LOOP_INTERVAL = 10;
+let loopInterval = 130;
 
 // Define the initial position and length of the snake
 var snake = {
@@ -106,6 +109,8 @@ function update() {
   // Check if the snake has eaten the food
   if (snake.x === food.x && snake.y === food.y) {
     snake.length++;
+    loopInterval = Math.max(loopInterval - 5, MIN_LOOP_INTERVAL);
+
     food.x = Math.floor(Math.random() * canvas.width / cellSize);
     food.y = Math.floor(Math.random() * canvas.height / cellSize);
   }
@@ -133,45 +138,6 @@ function draw() {
   drawCell(food.x, food.y);
 }
 
-// Define the function to handle key presses and touch events
-/*function handleInput(input) {
-    if (input.keyCode >= 37 && input.keyCode <= 40) {
-      // Handle key presses
-      switch (input.keyCode) {
-        case 38: // Up arrow
-          snake.direction = "up";
-          break;
-        case 40: // Down arrow
-          snake.direction = "down";
-          break;
-        case 37: // Left arrow
-          snake.direction = "left";
-          break;
-        case 39: // Right arrow
-          snake.direction = "right";
-          break;
-      }
-    } else if (input.type === "touchstart") {
-      // Handle touch events
-      startX = input.touches[0].pageX;
-      startY = input.touches[0].pageY;
-    } else if (input.type === "touchmove") {
-        // Handle touch events
-        var endX = input.touches[0].pageX;
-        var endY = input.touches[0].pageY;
-        var dx = endX - startX;
-        var dy = endY - startY;
-        var absDx = Math.abs(dx);
-        var absDy = Math.abs(dy);
-        
-        if (absDx > absDy && absDx > 10) {
-            snake.direction = dx > 0 ? "right" : "left";
-        } else if (absDy > absDx && absDy > 10) {
-            snake.direction = dy > 0 ? "down" : "up";
-        }
-    }
-}*/
-
 const ENTER_KEY = 13;
 const LEFT_KEY = 37;
 const UP_KEY = 38;
@@ -193,33 +159,6 @@ function handleInput(event) {
         hideModal();
     }
   }
-  /*else if (event.type === "touchstart") {
-    startX = event.touches[0].pageX;
-    startY = event.touches[0].pageY;
-  } else if (event.type === "touchmove") {
-    endX = event.touches[0].pageX;
-    endY = event.touches[0].pageY;
-
-    var diffX = startX - endX;
-    var diffY = startY - endY;
-
-    if (Math.abs(diffX) > Math.abs(diffY)) {
-      // horizontal swipe
-      if (diffX > 0 && snake.direction !== "right") {
-        snake.direction = "left";
-      } else if (diffX < 0 && snake.direction !== "left") {
-        snake.direction = "right";
-      }
-    } else {
-      // vertical swipe
-      if (diffY > 0 && snake.direction !== "down") {
-        snake.direction = "up";
-      } else if (diffY < 0 && snake.direction !== "up") {
-        snake.direction = "down";
-      }
-    }
-  }
-  */
 }
 
 // Set up the initial game state
@@ -231,12 +170,10 @@ for (var i = 0; i < snake.length; i++) {
     snake.cells.push({ x: snake.x - i, y: snake.y });
 }
 
-// Add the event listeners for key presses and touch events
+// Add the event listeners for key presses
 document.addEventListener("keydown", handleInput);
-/*
-document.addEventListener("touchstart", handleInput);
-document.addEventListener("touchmove", handleInput);
-*/
+
+// Add the event listeners for button clicks
 document.getElementById("up-button").addEventListener("click", function() {
     if (snake.direction !== "down") {
         snake.direction = "up";
@@ -262,7 +199,7 @@ document.getElementById("up-button").addEventListener("click", function() {
 function loop() {
     update();
     draw();
-    setTimeout(loop, 100);
+    setTimeout(loop, loopInterval);
 }
 
 // Start the game loop
