@@ -14,9 +14,43 @@
       canvas {
         border: 1px solid black;
       }
+
+      #game-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #mobile-controls {
+        display: none;
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        text-align: center;
+        width: 18em;
+      }
+
+      @media (max-width: 768px) {
+        #mobile-controls {
+            display: block;
+        }
+      }
     </style>
   </head>
   <body>
-    <script src="snake.js"></script>
+    
+    <div id="game-container">
+        <canvas id="game-canvas"></canvas>
+        
+        <div id="mobile-controls">
+          <button id="up-button">Up</button>
+          <br>
+          <button id="left-button">Left</button>
+          <button id="down-button">Down</button>
+          <button id="right-button">Right</button>
+        </div>
+      </div>
+      
+      <script src="snake.js"></script>
   </body>
 </html>

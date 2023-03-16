@@ -11,12 +11,12 @@ In practice, you can adjust this value as needed to achieve the desired block si
   
 // Calculate the number of columns and rows based on the block size
 var COLS = Math.floor(window.innerWidth * 0.8 / BLOCK_SIZE);
-var ROWS = Math.floor(window.innerHeight * 0.8 / BLOCK_SIZE);
+var ROWS = Math.floor(window.innerHeight * 0.7 / BLOCK_SIZE);
 
 console.log(BLOCK_SIZE, COLS, ROWS)
 
 // Define the canvas and its context
-const canvas = document.createElement("canvas");
+const canvas = document.getElementById("game-canvas");
 // Set the size of the canvas based on the size of the game grid
 canvas.width = Math.min(COLS * BLOCK_SIZE, 900);
 canvas.height = Math.min(ROWS * BLOCK_SIZE, 700)
@@ -164,7 +164,8 @@ function handleInput(event) {
     } else if (event.keyCode === DOWN_KEY && snake.direction !== "up") {
         snake.direction = "down";
     }
-  } else if (event.type === "touchstart") {
+  }
+  /*else if (event.type === "touchstart") {
     startX = event.touches[0].pageX;
     startY = event.touches[0].pageY;
   } else if (event.type === "touchmove") {
@@ -190,6 +191,7 @@ function handleInput(event) {
       }
     }
   }
+  */
 }
 
 // Set up the initial game state
@@ -203,8 +205,30 @@ for (var i = 0; i < snake.length; i++) {
 
 // Add the event listeners for key presses and touch events
 document.addEventListener("keydown", handleInput);
+/*
 document.addEventListener("touchstart", handleInput);
 document.addEventListener("touchmove", handleInput);
+*/
+document.getElementById("up-button").addEventListener("click", function() {
+    if (snake.direction !== "down") {
+        snake.direction = "up";
+    }
+  });
+  document.getElementById("left-button").addEventListener("click", function() {
+    if (snake.direction !== "right") {
+        snake.direction = "left";
+    }
+  });
+  document.getElementById("down-button").addEventListener("click", function() {
+    if (snake.direction !== "up") {
+        snake.direction = "down";
+    }
+  });
+  document.getElementById("right-button").addEventListener("click", function() {
+    if (snake.direction !== "left") {
+        snake.direction = "right";
+    }
+  });
 
 // Define the main game loop
 function loop() {
