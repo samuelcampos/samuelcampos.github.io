@@ -237,4 +237,4 @@ function loop() {
 }
 
 // Start the game loop
-loop();
+//loop();
