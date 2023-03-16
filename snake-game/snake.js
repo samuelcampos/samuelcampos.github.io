@@ -24,6 +24,8 @@ canvas.height = Math.min(ROWS * BLOCK_SIZE, 700)
 
 const ctx = canvas.getContext("2d");
 
+let inRunning = true;
+
 // Define the width and height of each cell in the grid
 var cellSize = 10;
 
@@ -47,8 +49,33 @@ function drawCell(x, y) {
   ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 }
 
+const modalContainer = document.getElementById("modal-container");
+const modalOverlay = document.querySelector(".modal-overlay");
+const modalCloseBtn = document.getElementById("modal-close-btn");
+
+// Show the modal
+function showModal() {
+  modalContainer.style.display = "block";
+  inRunning = false;
+}
+
+// Hide the modal
+function hideModal() {
+    location.reload();
+  modalContainer.style.display = "none";
+}
+
+
+// Hide the modal when the overlay or close button is clicked
+modalOverlay.addEventListener("click", hideModal);
+modalCloseBtn.addEventListener("click", hideModal);
+
 // Define the function to update the game state
 function update() {
+    if(!inRunning) {
+        return;
+    }
+
   // Move the snake in its current direction
   switch (snake.direction) {
     case "up":
@@ -67,13 +94,12 @@ function update() {
 
   // Check if the snake has collided with a wall or with itself
   if (snake.x < 0 || snake.x >= canvas.width / cellSize || snake.y < 0 || snake.y >= canvas.height / cellSize) {
-    alert("Game Over!\nTry Again ;)");
-    location.reload();
+    showModal();
+    
   }
   for (var i = 0; i < snake.cells.length; i++) {
     if (snake.cells[i].x === snake.x && snake.cells[i].y === snake.y) {
-      alert("Game Over!\nTry Again ;)");
-      location.reload();
+        showModal();   
     }
   }
 
