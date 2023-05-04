@@ -13,8 +13,6 @@ In practice, you can adjust this value as needed to achieve the desired block si
 const COLS = Math.floor(window.innerWidth * 0.8 / BLOCK_SIZE);
 const ROWS = Math.floor(window.innerHeight * 0.65 / BLOCK_SIZE);
 
-console.log(BLOCK_SIZE, COLS, ROWS)
-
 // Define the canvas and its context
 const canvas = document.getElementById("game-canvas");
 // Set the size of the canvas based on the size of the game grid
@@ -27,10 +25,14 @@ const ctx = canvas.getContext("2d");
 // Define the width and height of each cell in the grid
 const cellSize = 10;
 
-let inRunning = true;
 
-const MIN_LOOP_INTERVAL = 10;
-let loopInterval = 130;
+const MIN_LOOP_INTERVAL = 20;
+const gameState = {
+    inRunning: true,
+    loopInterval: 130,
+    level: 1
+};
+
 
 // Define the initial position and length of the snake
 var snake = {
@@ -59,7 +61,7 @@ const modalCloseBtn = document.getElementById("modal-close-btn");
 // Show the modal
 function showModal() {
   modalContainer.style.display = "block";
-  inRunning = false;
+  gameState.inRunning = false;
 }
 
 // Hide the modal
@@ -75,7 +77,7 @@ modalCloseBtn.addEventListener("click", hideModal);
 
 // Define the function to update the game state
 function update() {
-    if(!inRunning) {
+    if(!gameState.inRunning) {
         return;
     }
 
@@ -109,7 +111,10 @@ function update() {
   // Check if the snake has eaten the food
   if (snake.x === food.x && snake.y === food.y) {
     snake.length++;
-    loopInterval = Math.max(loopInterval - 5, MIN_LOOP_INTERVAL);
+    gameState.loopInterval = Math.max(gameState.loopInterval - 5, MIN_LOOP_INTERVAL);
+    gameState.level++;
+
+    console.log(gameState.loopInterval);
 
     food.x = Math.floor(Math.random() * canvas.width / cellSize);
     food.y = Math.floor(Math.random() * canvas.height / cellSize);
@@ -155,7 +160,7 @@ function handleInput(event) {
         snake.direction = "right";
     } else if (event.keyCode === DOWN_KEY && snake.direction !== "up") {
         snake.direction = "down";
-    } else if (event.keyCode === ENTER_KEY && !inRunning) {
+    } else if (event.keyCode === ENTER_KEY && !gameState.inRunning) {
         hideModal();
     }
   }
@@ -199,7 +204,7 @@ document.getElementById("up-button").addEventListener("click", function() {
 function loop() {
     update();
     draw();
-    setTimeout(loop, loopInterval);
+    setTimeout(loop, gameState.loopInterval);
 }
 
 // Start the game loop
